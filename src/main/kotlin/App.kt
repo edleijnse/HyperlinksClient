@@ -1,4 +1,3 @@
-
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import javafx.beans.property.SimpleStringProperty
@@ -18,7 +17,7 @@ fun main() {
 }
 
 // zentrale App-Klasse
-class MyApp: App(MyView::class)
+class MyApp : App(MyView::class)
 
 // Fensterinhalt
 class MyView : View() {
@@ -28,12 +27,13 @@ class MyView : View() {
 
     override val root = form {
         input.value = ""
+        setPrefSize(1000.0, 600.0)
         fieldset {
             field("Input") {
                 textfield(input)
             }
 
-            button("Commit") {
+            button("search") {
                 action {
                     val myOutput = controller.readHyperlinks(input.value)
                     output.value = myOutput
@@ -44,57 +44,70 @@ class MyView : View() {
                 }
             }
             text(output) {
-                fill = Color.PURPLE
-                font = Font(20.0)
+                fill = Color.BLACK
+                font = Font(12.0)
             }
+            field("Output") {
+                textfield(output)
+            }
+
+
         }
     }
 }
 
 
-class MyController: Controller() {
+class MyController : Controller() {
     fun writeToDb(inputValue: String) {
         println("Writing $inputValue to database!")
     }
+
     fun readHyperlinks(searchString: String): String {
         println("hyperlinks restcall with $searchString ")
         val encodedSearchString = URLEncoder.encode(searchString, "utf-8")
         val url = URL(
-            "https://leijnse.info/hyperlinks/rest/Restcontroller.php/?command=allmysql&count=900&from=0&search=$encodedSearchString")
+            "https://leijnse.info/hyperlinks/rest/Restcontroller.php/?command=allmysql&count=900&from=0&search=$encodedSearchString"
+        )
         val jsonData = url.readText()
         println("output: $jsonData")
+        var hyperlinksText = "";
 
         // val hyperlinkListFromJson: kotlin.Any = ObjectMapper().readTree(jsonData)
         val mapper = ObjectMapper()
-        val rootArray: JsonNode = mapper.readTree(jsonData)
+        val hyperlinksArray: JsonNode = mapper.readTree(jsonData)
 
-        for (root in rootArray) {
+        for (hyperlink in hyperlinksArray) {
 
             // Get id
-            val id = root.path("ID")
+            val id = hyperlink.path("ID")
             println("id : $id")
             // Get group
-            val group = root.path("group")
+            val group = hyperlink.path("group")
             println("group : $group")
             // Get category
-            val category = root.path("category")
+            val category = hyperlink.path("category")
             println("category : $category")
             // Get webdescription
-            val webdescription = root.path("webdescription")
+            val webdescription = hyperlink.path("webdescription")
             println("id : $webdescription")
             // Get website
-            val website = root.path("website")
+            val website = hyperlink.path("website")
             println("website : $website")
+
+            hyperlinksText =
+                hyperlinksText + "ID: $id" + ", $group" + ", $category" + ", $webdescription" + ", $website" + "\n"
 
 
         }
-        return jsonData.toString()
+        return hyperlinksText
     }
 }
+
 class Hyperlinks {
     var hyperlinks: List<Hyperlink>? = null
 }
-class Hyperlink (
+
+class Hyperlink(
     val ID: String,
     val group: String,
     val category: String,
