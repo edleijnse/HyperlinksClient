@@ -1,9 +1,11 @@
 
 import javafx.beans.property.SimpleStringProperty
-import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import tornadofx.*
+import java.net.URL
+import java.net.URLEncoder
+
 // https://edvin.gitbooks.io/tornadofx-guide/content/part1/3_Components.html
 
 
@@ -30,7 +32,7 @@ class MyView : View() {
 
             button("Commit") {
                 action {
-                    controller.writeToDb(input.value)
+                    controller.readHyperlinks(input.value)
                     output.value = input.value
                     input.value = ""
                 }
@@ -50,5 +52,13 @@ class MyView : View() {
 class MyController: Controller() {
     fun writeToDb(inputValue: String) {
         println("Writing $inputValue to database!")
+    }
+    fun readHyperlinks(searchString: String) {
+        println("hyperlinks restcall with $searchString ")
+        val encodedSearchString = URLEncoder.encode(searchString, "utf-8")
+        val url = URL(
+            "https://leijnse.info/hyperlinks/rest/Restcontroller.php/?command=allmysql&count=900&from=0&search=$encodedSearchString")
+        val jsonData = url.readText()
+        println("output: $jsonData")
     }
 }
