@@ -32,8 +32,8 @@ class MyView : View() {
 
             button("Commit") {
                 action {
-                    controller.readHyperlinks(input.value)
-                    output.value = input.value
+                    val myOutput = controller.readHyperlinks(input.value)
+                    output.value = myOutput
                     input.value = ""
                 }
                 style {
@@ -53,12 +53,13 @@ class MyController: Controller() {
     fun writeToDb(inputValue: String) {
         println("Writing $inputValue to database!")
     }
-    fun readHyperlinks(searchString: String) {
+    fun readHyperlinks(searchString: String): String {
         println("hyperlinks restcall with $searchString ")
         val encodedSearchString = URLEncoder.encode(searchString, "utf-8")
         val url = URL(
             "https://leijnse.info/hyperlinks/rest/Restcontroller.php/?command=allmysql&count=900&from=0&search=$encodedSearchString")
         val jsonData = url.readText()
         println("output: $jsonData")
+        return jsonData.toString()
     }
 }
