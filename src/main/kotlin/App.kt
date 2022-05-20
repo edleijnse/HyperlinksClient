@@ -1,8 +1,9 @@
+
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import javafx.beans.property.SimpleStringProperty
+import javafx.scene.control.SelectionMode
 import javafx.scene.paint.Color
-import javafx.scene.text.Font
 import tornadofx.*
 import java.net.URL
 import java.net.URLEncoder
@@ -23,7 +24,9 @@ class MyApp : App(MyView::class)
 class MyView : View() {
     val controller: MyController by inject()
     val input = SimpleStringProperty()
-    val output = SimpleStringProperty()
+    var hyperLinksList = listOf("").toMutableList().asObservable()
+    var hyperLinksListSimple = listOf("")
+
 
     override val root = form {
         input.value = ""
@@ -35,20 +38,20 @@ class MyView : View() {
 
             button("search") {
                 action {
-                    val myOutput = controller.readHyperlinks(input.value)
-                    output.value = myOutput
+                    hyperLinksList.clear()
+                    hyperLinksListSimple = controller.readHyperlinks(input.value)
+                    for (hyperlinkItem in hyperLinksListSimple) {
+                        hyperLinksList.add(hyperlinkItem)
+                    }
                     input.value = ""
                 }
                 style {
                     textFill = Color.RED
                 }
             }
-            text(output) {
-                fill = Color.BLACK
-                font = Font(12.0)
-            }
-            field("Output") {
-                textfield(output)
+
+            listview(hyperLinksList) {
+                selectionModel.selectionMode = SelectionMode.MULTIPLE
             }
 
 
@@ -62,7 +65,7 @@ class MyController : Controller() {
         println("Writing $inputValue to database!")
     }
 
-    fun readHyperlinks(searchString: String): String {
+    fun readHyperlinks(searchString: String): List<String> {
         println("hyperlinks restcall with $searchString ")
         val encodedSearchString = URLEncoder.encode(searchString, "utf-8")
         val url = URL(
@@ -71,6 +74,8 @@ class MyController : Controller() {
         val jsonData = url.readText()
         println("output: $jsonData")
         var hyperlinksText = "";
+        var hyperlinksList = listOf("").toMutableList()
+        hyperlinksList.clear()
 
         // val hyperlinkListFromJson: kotlin.Any = ObjectMapper().readTree(jsonData)
         val mapper = ObjectMapper()
@@ -95,11 +100,11 @@ class MyController : Controller() {
             println("website : $website")
 
             hyperlinksText =
-                hyperlinksText + "ID: $id" + ", $group" + ", $category" + ", $webdescription" + ", $website" + "\n"
-
+                "ID: $id" + ", $group" + ", $category" + ", $webdescription" + ", $website" + "\n"
+            hyperlinksList.add(hyperlinksText)
 
         }
-        return hyperlinksText
+        return hyperlinksList
     }
 }
 
