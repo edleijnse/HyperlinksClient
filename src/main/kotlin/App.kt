@@ -2,7 +2,7 @@
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import javafx.beans.property.SimpleStringProperty
-import javafx.scene.control.SelectionMode
+import javafx.collections.FXCollections
 import javafx.scene.paint.Color
 import tornadofx.*
 import java.net.URL
@@ -24,7 +24,10 @@ class MyApp : App(MyView::class)
 class MyView : View() {
     val controller: MyController by inject()
     val input = SimpleStringProperty()
-    var hyperLinksList = listOf("").toMutableList().asObservable()
+    // var hyperLinksList = listOf("").toMutableList().asObservable()
+    val hyperLinksList = FXCollections.observableArrayList<String>(
+    )
+
     var hyperLinksListSimple = listOf("")
 
 
@@ -51,7 +54,9 @@ class MyView : View() {
             }
 
             listview(hyperLinksList) {
-                selectionModel.selectionMode = SelectionMode.MULTIPLE
+               // selectionModel.selectionMode = SelectionMode.SINGLE
+               onUserSelect { "print you selected" }
+
             }
 
 
@@ -73,7 +78,7 @@ class MyController : Controller() {
         )
         val jsonData = url.readText()
         println("output: $jsonData")
-        var hyperlinksText = "";
+        var hyperlinksText: String
         var hyperlinksList = listOf("").toMutableList()
         hyperlinksList.clear()
 

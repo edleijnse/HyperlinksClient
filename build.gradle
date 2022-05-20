@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.6.0'
-    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.openjfx.javafxplugin' version '0.0.3'
 }
 
 group 'org.example'
@@ -30,6 +30,6 @@ compileTestKotlin {
 
 javafx {
     // auch aktuellere Versionen funktionieren, z. B. 13
-    version = "11"
+    version = "13"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
