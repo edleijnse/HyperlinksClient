@@ -1,8 +1,11 @@
 
+//import javafx.scene.control.SelectionMode
+//import javafx.scene.control.skin.TableColumnHeader
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
+import javafx.scene.control.SelectionMode
 import javafx.scene.paint.Color
 import tornadofx.*
 import java.net.URL
@@ -52,14 +55,18 @@ class MyView : View() {
                     textFill = Color.RED
                 }
             }
-
             listview(hyperLinksList) {
-               // selectionModel.selectionMode = SelectionMode.SINGLE
-               onUserSelect { "print you selected" }
-
+                selectionModel.selectionMode = SelectionMode.SINGLE
+                //TableColumnHeader columnHeader =
+                // onUserSelect(1) { "print you selected" }
+                onDoubleClick {
+                    println("double click")
+                }
             }
-
-
+            hyperlink("open hyperlink") {
+                action {
+                    println("hyperlink clicked")}
+            }
         }
     }
 }
