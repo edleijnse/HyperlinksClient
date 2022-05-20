@@ -60,7 +60,7 @@ class MyView : View() {
                 //TableColumnHeader columnHeader =
                 // onUserSelect(1) { "print you selected" }
                 onDoubleClick {
-                    println("double click")
+                    println("double click: $selectedItem")
                 }
             }
             hyperlink("open hyperlink") {
