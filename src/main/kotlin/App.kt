@@ -8,6 +8,8 @@ import javafx.collections.FXCollections
 import javafx.scene.control.SelectionMode
 import javafx.scene.paint.Color
 import tornadofx.*
+import java.awt.Desktop
+import java.net.URI
 import java.net.URL
 import java.net.URLEncoder
 
@@ -32,7 +34,7 @@ class MyView : View() {
     )
 
     var hyperLinksListSimple = listOf("")
-
+    var selectedUrl = "nothing selected"
 
     override val root = form {
         input.value = ""
@@ -59,13 +61,22 @@ class MyView : View() {
                 selectionModel.selectionMode = SelectionMode.SINGLE
                 //TableColumnHeader columnHeader =
                 // onUserSelect(1) { "print you selected" }
+
                 onDoubleClick {
-                    println("double click: $selectedItem")
+                    selectedUrl = MyController().extractUrl(selectedItem.toString())
+                    println("double click: $selectedUrl")
+                    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                        Desktop.getDesktop().browse(URI(selectedUrl));
+                    }
                 }
             }
-            hyperlink("open hyperlink") {
+            hyperlink("double click on list to go to hyperlink") {
                 action {
-                    println("hyperlink clicked")}
+                    println("hyperlink clicked: $selectedUrl")
+                    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                        Desktop.getDesktop().browse(URI(selectedUrl));
+                    }
+                }
             }
         }
     }
@@ -76,7 +87,16 @@ class MyController : Controller() {
     fun writeToDb(inputValue: String) {
         println("Writing $inputValue to database!")
     }
+    fun extractUrl(inputUrl: String): String {
+        val startIndex = inputUrl.lastIndexOf("-#") + 3
+        val stopIndex = inputUrl.lastIndexOf("#-") - 1
+        var outputUrl = ""
+        if ((startIndex>=0) &&  (stopIndex>0)) {
+            outputUrl = inputUrl.substring(startIndex,stopIndex)
+        }
 
+        return outputUrl
+    }
     fun readHyperlinks(searchString: String): List<String> {
         println("hyperlinks restcall with $searchString ")
         val encodedSearchString = URLEncoder.encode(searchString, "utf-8")
@@ -112,7 +132,7 @@ class MyController : Controller() {
             println("website : $website")
 
             hyperlinksText =
-                "ID: $id" + ", $group" + ", $category" + ", $webdescription" + ", $website" + "\n"
+                "ID: $id" + ", $group" + ", $category" + ", $webdescription" + ", -#$website#-" + "\n"
             hyperlinksList.add(hyperlinksText)
 
         }
