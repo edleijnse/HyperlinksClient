@@ -35,3 +35,11 @@ javafx {
 tasks.test {
     useJUnitPlatform()
 }
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+application {
+    mainClassName = "HyperlinksClient.main.MyApp"
+}
+
+

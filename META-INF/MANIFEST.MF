@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Main-Class: MyApp
+Class-Path: jackson-annotations-2.8.0.jar junit-jupiter-5.8.1.jar kotlin
+ -stdlib-jdk7-1.6.0.jar kotlin-stdlib-jdk8-1.6.0.jar junit-jupiter-engin
+ e-5.8.1.jar jackson-module-kotlin-2.8.7.jar junit-jupiter-api-5.8.1.jar
+  hamcrest-core-1.3.jar javax.json-api-1.1.2.jar junit-platform-engine-1
+ .8.1.jar javafx-base-11-win.jar opentest4j-1.2.0.jar annotations-13.0.j
+ ar jackson-core-asl-1.5.2.jar javax.json-1.1.2.jar kotlin-reflect-1.3.6
+ 1.jar jackson-core-2.8.7.jar kotlin-stdlib-common-1.6.0.jar javafx-fxml
+ -11-win.jar junit-jupiter-params-5.8.1.jar junit-platform-commons-1.8.1
+ .jar javafx-controls-11.jar javafx-graphics-11.jar javafx-graphics-11-w
+ in.jar junit-4.12.jar tornadofx-1.7.20.jar javafx-base-11.jar jackson-m
+ apper-asl-1.5.2.jar javafx-controls-11-win.jar jackson-databind-2.8.7.j
+ ar kotlin-stdlib-1.6.0.jar
+
