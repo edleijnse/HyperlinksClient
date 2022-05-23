@@ -1,0 +1,2 @@
+cd C:\Users\edlei\IdeaProjects\HyperlinksClient\out\artifacts\HyperlinksClient_main_jar
+java --module-path "C:\Program Files\javafx-sdk-18.0.1\lib" --add-modules javafx.controls,javafx.fxml -jar HyperlinksClient.main.jar
