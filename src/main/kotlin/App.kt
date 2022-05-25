@@ -97,12 +97,6 @@ class MyView : View() {
                     setPrefSize(1000.0, 600.0)
                     fieldset ("insert a hyperlink"){
                         hbox{
-                            label("ID                       ")
-                            field("ID"){
-                                textfield(ID)
-                            }
-                        }
-                        hbox{
                             label("group                 ")
                             field("group"){
                                 textfield(group)
@@ -128,7 +122,7 @@ class MyView : View() {
                         }
                         button("insert") {
                             action {
-                                controller.insertHyperLink(ID.value, group.value, category.value,webdescription.value,website.value)
+                                controller.insertHyperLink( group.value, category.value,webdescription.value,website.value)
                             }
                             style {
                                 textFill = Color.RED
@@ -178,16 +172,15 @@ class MyController : Controller() {
 
         return outputUrl
     }
-    fun insertHyperLink(ID: String, group: String, category: String, webdescription: String, website: String): String {
+    fun insertHyperLink( group: String, category: String, webdescription: String, website: String): String {
         var resultString: String = ""
-        println("ID: $ID group:$group category:$category webdescription:$webdescription website:$website")
-        val encodedID = URLEncoder.encode(ID, "utf-8")
+        println("group:$group category:$category webdescription:$webdescription website:$website")
         val encodedGroup = URLEncoder.encode(group, "utf-8")
         val encodedCategory = URLEncoder.encode(category, "utf-8")
         val encodedWebdescription = URLEncoder.encode(webdescription, "utf-8")
         val encodedWebsite = URLEncoder.encode(website, "utf-8")
         val url = URL(
-            "https://leijnse.info/hyperlinks/rest/Restcontroller.php/?command=insertmysql&ID=$encodedID&group=$encodedGroup&category=$encodedCategory&webdescription=$encodedWebdescription&website=$encodedWebsite"
+            "https://leijnse.info/hyperlinks/rest/Restcontroller.php/?command=insertmysql&group=$encodedGroup&category=$encodedCategory&webdescription=$encodedWebdescription&website=$encodedWebsite"
 
         )
         val jsonData = url.readText()
