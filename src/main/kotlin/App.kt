@@ -77,7 +77,7 @@ class MyView : View() {
 
                     tableview(hyperLinksList) {
                         selectionModel.selectionMode = SelectionMode.SINGLE
-                        columnResizePolicy = SmartResize.POLICY
+                        // columnResizePolicy = SmartResize.POLICY
                         //TableColumnHeader columnHeader =
                         // onUserSelect(1) { "print you selected" }
                         // https://catwolf.org/qs?id=5b2a883c-15d0-4d56-bd0f-cc89543fa044&x=y
@@ -86,8 +86,10 @@ class MyView : View() {
                         column("ID",HyperlinkItem::ID)
                         column("group",HyperlinkItem::group)
                         readonlyColumn("category",HyperlinkItem::category)
-                        column("webdescription",HyperlinkItem::webdescription).remainingWidth()
-                        readonlyColumn("url",HyperlinkItem::website).remainingWidth()
+                        // column("webdescription",HyperlinkItem::webdescription).remainingWidth()
+                        column("webdescription",HyperlinkItem::webdescription)
+                        // readonlyColumn("url",HyperlinkItem::website).remainingWidth()
+                        readonlyColumn("url",HyperlinkItem::website)
 
                         onDoubleClick {
                             // selectedUrl = MyController().extractUrl(selectedItem.toString())
