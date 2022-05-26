@@ -86,10 +86,10 @@ class MyView : View() {
                         column("ID",HyperlinkItem::ID)
                         column("group",HyperlinkItem::group)
                         readonlyColumn("category",HyperlinkItem::category)
-                        // column("webdescription",HyperlinkItem::webdescription).remainingWidth()
-                        column("webdescription",HyperlinkItem::webdescription)
-                        // readonlyColumn("url",HyperlinkItem::website).remainingWidth()
-                        readonlyColumn("url",HyperlinkItem::website)
+                        column("webdescription",HyperlinkItem::webdescription).prefWidth(300.0)
+                        // column("webdescription",HyperlinkItem::webdescription).contentWidth(500.0)
+                        readonlyColumn("url",HyperlinkItem::website).prefWidth(400.0)
+                        // readonlyColumn("url",HyperlinkItem::website)
 
                         onDoubleClick {
                             // selectedUrl = MyController().extractUrl(selectedItem.toString())
