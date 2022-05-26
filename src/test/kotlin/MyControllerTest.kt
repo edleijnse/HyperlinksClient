@@ -13,4 +13,13 @@ class MyControllerTest {
         println("urlOutput: $urlOutput")
         Assertions.assertEquals(urlExpectedOutput,urlOutput)
     }
+
+    @Test
+    fun cleanUrl(){
+        val urlInput = """https://clean"""
+        val urlOutput = controller.cleanUrl(urlInput)
+        val urlExpectedOutput = "ttps://clea"
+        println("urlOutput: $urlOutput")
+        Assertions.assertEquals(urlExpectedOutput,urlOutput)
+    }
 }

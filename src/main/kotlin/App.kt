@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import javafx.scene.control.SelectionMode
 import javafx.scene.paint.Color
 import tornadofx.*
@@ -30,7 +31,9 @@ class MyView : View() {
     val controller: MyController by inject()
     val input = SimpleStringProperty()
     // var hyperLinksList = listOf("").toMutableList().asObservable()
-    val hyperLinksList = FXCollections.observableArrayList<String>(
+    var hyperLinksListSimple = FXCollections.observableArrayList<HyperlinkItem>(
+    )
+    var hyperLinksList = FXCollections.observableArrayList<HyperlinkItem>(
     )
     val ID = SimpleStringProperty()
     val group = SimpleStringProperty()
@@ -38,7 +41,6 @@ class MyView : View() {
     val webdescription = SimpleStringProperty()
     val website = SimpleStringProperty()
 
-    var hyperLinksListSimple = listOf("")
     var selectedUrl = "nothing selected"
 
     override val root = form {
@@ -57,11 +59,12 @@ class MyView : View() {
                     field("Input") {
                         textfield(input)
                     }
-
                     button("search") {
                         action {
+                            hyperLinksListSimple.clear()
+                            hyperLinksListSimple = controller.readHyperlinks(input.value) as ObservableList<HyperlinkItem>?
+
                             hyperLinksList.clear()
-                            hyperLinksListSimple = controller.readHyperlinks(input.value)
                             for (hyperlinkItem in hyperLinksListSimple) {
                                 hyperLinksList.add(hyperlinkItem)
                             }
@@ -71,19 +74,38 @@ class MyView : View() {
                             textFill = Color.RED
                         }
                     }
-                    listview(hyperLinksList) {
+
+                    tableview(hyperLinksList) {
                         selectionModel.selectionMode = SelectionMode.SINGLE
+                        columnResizePolicy = SmartResize.POLICY
                         //TableColumnHeader columnHeader =
                         // onUserSelect(1) { "print you selected" }
+                        // https://catwolf.org/qs?id=5b2a883c-15d0-4d56-bd0f-cc89543fa044&x=y
+
+
+                        column("ID",HyperlinkItem::ID)
+                        column("group",HyperlinkItem::group)
+                        readonlyColumn("category",HyperlinkItem::category)
+                        column("webdescription",HyperlinkItem::webdescription).remainingWidth()
+                        readonlyColumn("url",HyperlinkItem::website).remainingWidth()
 
                         onDoubleClick {
-                            selectedUrl = MyController().extractUrl(selectedItem.toString())
-                            println("double click: $selectedUrl")
-                            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                                Desktop.getDesktop().browse(URI(selectedUrl));
+                            // selectedUrl = MyController().extractUrl(selectedItem.toString())
+                            var selectedHyperlink = selectedItem
+
+
+                            println("selectedItem: $selectedHyperlink.website")
+                            if (selectedHyperlink != null) {
+                                selectedUrl = controller.cleanUrl(selectedHyperlink.website)
+                                println("double click: $selectedUrl")
+                                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                                    Desktop.getDesktop().browse(URI(selectedUrl));
+                                }
                             }
+
                         }
                     }
+
                     hyperlink("double click on list to go to hyperlink") {
                         action {
                             println("hyperlink clicked: $selectedUrl")
@@ -172,8 +194,13 @@ class MyController : Controller() {
 
         return outputUrl
     }
+    fun cleanUrl(inputUrl: String): String {
+        val outputCleaned = inputUrl.substring(1, inputUrl.length-1)
+
+        return outputCleaned
+    }
     fun insertHyperLink( group: String, category: String, webdescription: String, website: String): String {
-        var resultString: String = ""
+        var resultString: String
         println("group:$group category:$category webdescription:$webdescription website:$website")
         val encodedGroup = URLEncoder.encode(group, "utf-8")
         val encodedCategory = URLEncoder.encode(category, "utf-8")
@@ -190,7 +217,7 @@ class MyController : Controller() {
         return resultString
     }
     fun deleteHyperLink(ID: String): String {
-        var resultString: String = ""
+        var resultString: String
         println("ID: $ID ")
         val encodedID = URLEncoder.encode(ID, "utf-8")
         val url = URL(
@@ -203,7 +230,7 @@ class MyController : Controller() {
         resultString= "OK"
         return resultString
     }
-    fun readHyperlinks(searchString: String): List<String> {
+    fun readHyperlinks(searchString: String): List<HyperlinkItem> {
         println("hyperlinks restcall with $searchString ")
         val encodedSearchString = URLEncoder.encode(searchString, "utf-8")
         val url = URL(
@@ -212,8 +239,9 @@ class MyController : Controller() {
         val jsonData = url.readText()
         println("output: $jsonData")
         var hyperlinksText: String
-        var hyperlinksList = listOf("").toMutableList()
-        hyperlinksList.clear()
+        val hyperLinksList = FXCollections.observableArrayList<HyperlinkItem>(
+        )
+        hyperLinksList.clear()
 
         // val hyperlinkListFromJson: kotlin.Any = ObjectMapper().readTree(jsonData)
         val mapper = ObjectMapper()
@@ -239,21 +267,29 @@ class MyController : Controller() {
 
             hyperlinksText =
                 "ID: $id" + ", $group" + ", $category" + ", $webdescription" + ", -#$website#-" + "\n"
-            hyperlinksList.add(hyperlinksText)
+            var myHyperlink = HyperlinkItem(id.toString(), group.toString(), category.toString(), webdescription.toString(), website.toString())
+            hyperLinksList.add(myHyperlink)
 
         }
-        return hyperlinksList
+        return hyperLinksList
     }
 }
 
 class Hyperlinks {
-    var hyperlinks: List<Hyperlink>? = null
+    var hyperlinks: List<HyperlinkItem>? = null
 }
 
-class Hyperlink(
-    val ID: String,
-    val group: String,
-    val category: String,
-    val webdescription: String,
-    val website: String
-)
+class HyperlinkItem(ID: String, group: String, category: String, webdescription: String, website: String){
+    val IDProperty = SimpleStringProperty(ID)
+    var ID by IDProperty
+    val groupProperty = SimpleStringProperty(group)
+    var group by groupProperty
+    val categoryProperty = SimpleStringProperty(category)
+    var category by categoryProperty
+    val webdescriptionProperty = SimpleStringProperty(webdescription)
+    var webdescription by webdescriptionProperty
+    val websiteProperty = SimpleStringProperty(website)
+    var website by websiteProperty
+
+}
+
