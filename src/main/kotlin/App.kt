@@ -98,7 +98,8 @@ class MyView : View() {
 
                             println("selectedItem: $selectedHyperlink.website")
                             if (selectedHyperlink != null) {
-                                selectedUrl = controller.cleanUrl(selectedHyperlink.website)
+                                // selectedUrl = controller.cleanUrl(selectedHyperlink.website)
+                                selectedUrl = selectedHyperlink.website
                                 println("double click: $selectedUrl")
                                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                                     Desktop.getDesktop().browse(URI(selectedUrl));
@@ -252,24 +253,24 @@ class MyController : Controller() {
         for (hyperlink in hyperlinksArray) {
 
             // Get id
-            val id = hyperlink.path("ID")
+            val id = hyperlink.path("ID").textValue()
             println("id : $id")
             // Get group
-            val group = hyperlink.path("group")
+            val group = hyperlink.path("group").textValue()
             println("group : $group")
             // Get category
-            val category = hyperlink.path("category")
+            val category = hyperlink.path("category").textValue()
             println("category : $category")
             // Get webdescription
-            val webdescription = hyperlink.path("webdescription")
+            val webdescription = hyperlink.path("webdescription").textValue()
             println("id : $webdescription")
             // Get website
-            val website = hyperlink.path("website")
+            val website = hyperlink.path("website").textValue()
             println("website : $website")
 
             hyperlinksText =
                 "ID: $id" + ", $group" + ", $category" + ", $webdescription" + ", -#$website#-" + "\n"
-            var myHyperlink = HyperlinkItem(id.toString(), group.toString(), category.toString(), webdescription.toString(), website.toString())
+            var myHyperlink = HyperlinkItem(id, group, category, webdescription, website)
             hyperLinksList.add(myHyperlink)
 
         }
