@@ -76,6 +76,7 @@ class MyView : View() {
                     }
 
                     tableview(hyperLinksList) {
+                        isEditable = true
                         selectionModel.selectionMode = SelectionMode.SINGLE
                         // columnResizePolicy = SmartResize.POLICY
                         //TableColumnHeader columnHeader =
@@ -83,14 +84,20 @@ class MyView : View() {
                         // https://catwolf.org/qs?id=5b2a883c-15d0-4d56-bd0f-cc89543fa044&x=y
 
 
-                        column("ID",HyperlinkItem::ID)
-                        column("group",HyperlinkItem::group)
-                        readonlyColumn("category",HyperlinkItem::category)
-                        column("webdescription",HyperlinkItem::webdescription).prefWidth(300.0)
-                        // column("webdescription",HyperlinkItem::webdescription).contentWidth(500.0)
-                        readonlyColumn("url",HyperlinkItem::website).prefWidth(400.0)
+                        readonlyColumn("ID",HyperlinkItem::ID)
+                        column("group",HyperlinkItem::group).makeEditable().useTextField()
+                        column("category",HyperlinkItem::category).makeEditable().useTextField()
+                        column("webdescription",HyperlinkItem::webdescription).prefWidth(300.0).makeEditable().useTextField()
+                        // column("webdescription",HyperlinkItem::webdescription).contentWidth(500.0).makeEditable().useTextField()
+                        column("url",HyperlinkItem::website).prefWidth(400.0).makeEditable().useTextField()
                         // readonlyColumn("url",HyperlinkItem::website)
-
+                        onEditCommit {
+                            var selectedHyperlink = selectedItem
+                            if (selectedHyperlink != null) {
+                                val selectedGroup = selectedHyperlink.group
+                                println("onEditCommit: $selectedGroup")
+                            }
+                        }
                         onDoubleClick {
                             // selectedUrl = MyController().extractUrl(selectedItem.toString())
                             var selectedHyperlink = selectedItem
