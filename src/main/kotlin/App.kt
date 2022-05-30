@@ -94,8 +94,14 @@ class MyView : View() {
                         onEditCommit {
                             var selectedHyperlink = selectedItem
                             if (selectedHyperlink != null) {
+                                val selectedId = selectedHyperlink.ID
                                 val selectedGroup = selectedHyperlink.group
-                                println("onEditCommit: $selectedGroup")
+                                val selectedCategory = selectedHyperlink.category
+                                val selectedWebdescription = selectedHyperlink.webdescription
+                                val selectedWebsite = selectedHyperlink.website
+                                controller.insertHyperLink( selectedGroup, selectedCategory,selectedWebdescription,selectedWebsite)
+                                controller.deleteHyperLink(selectedId)
+                                println("onEditCommit: $selectedGroup $selectedCategory, $selectedWebdescription $selectedWebsite")
                             }
                         }
                         onDoubleClick {
