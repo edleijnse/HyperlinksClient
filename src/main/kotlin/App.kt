@@ -218,10 +218,10 @@ class MyController : Controller() {
     fun insertHyperLink( group: String, category: String, webdescription: String, website: String): String {
         var resultString: String
         println("group:$group category:$category webdescription:$webdescription website:$website")
-        val encodedGroup = URLEncoder.encode(group, "utf-8")
-        val encodedCategory = URLEncoder.encode(category, "utf-8")
-        val encodedWebdescription = URLEncoder.encode(webdescription, "utf-8")
-        val encodedWebsite = URLEncoder.encode(website, "utf-8")
+        val encodedGroup = URLEncoder.encode(group.replace("'","\\'"), "utf-8")
+        val encodedCategory = URLEncoder.encode(category.replace("'","\\'"), "utf-8")
+        val encodedWebdescription = URLEncoder.encode(webdescription.replace("'","\\'"), "utf-8")
+        val encodedWebsite = URLEncoder.encode(website.replace("'","\\'"), "utf-8")
         val url = URL(
             "https://leijnse.info/hyperlinks/rest/Restcontroller.php/?command=insertmysql&group=$encodedGroup&category=$encodedCategory&webdescription=$encodedWebdescription&website=$encodedWebsite"
 
